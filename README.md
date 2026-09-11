@@ -80,15 +80,16 @@ To rewrite and update files instead of failing on desync:
       commit_message: "chore: Sync header metadata"
 ```
 
-See [`.github/workflows/sync-header-metadata.yaml`](.github/workflows/sync-header-metadata.yaml)
-for a complete, worked example.
+For complete, worked examples. See:
+- [`.github/workflows/verify-header-metadata.yaml`](.github/workflows/verify-header-metadata.yaml)
+- [`.github/workflows/update-header-metadata.yaml`](.github/workflows/update-header-metadata.yaml)
 
 ### Inputs
 
-| Input        | Required | Default   | Description                                                        |
-|--------------|----------|-----------|---------------------------------------------------------------------|
+| Input        | Required | Default   | Description                                                       |
+|--------------|----------|-----------|-------------------------------------------------------------------|
 | `mode`       | No       | `verify`  | `verify` exits non-zero on drift; `update` rewrites in place.     |
-| `verbose`    | No       | `false`   | Enable INFO-level logging.                                         |
+| `verbose`    | No       | `false`   | Enable INFO-level logging.                                        |
 | `annotation` | No       | `false`   | Emit `::notice::`/`::warning::`/`::error::` workflow annotations. |
 
 ### Ignoring files
