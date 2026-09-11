@@ -4,7 +4,7 @@
 #
 #
 # ~chewygumxx/sync-header-metadata.git
-# ::: :/.github/workflows/apply-repo-metadata-jsonc.yaml
+# ::: :/.github/workflows/sync-repo-metadata.yaml
 #
 #
 
@@ -12,12 +12,13 @@
 # Applies metadata to a repository according to :/.repo-metadata.jsonc
 #
 
-name: Apply repository metadata (JSONC)
+name: Sync repository metadata
 on:
     push:
+        branches:
+            - main
         paths:
             - .repo-metadata.jsonc
-    workflow_dispatch: {}
 
 permissions:
     contents: read
@@ -34,10 +35,10 @@ jobs:
                   private-key: ${{ secrets.METADATA_APP_PRIVATE_KEY }}
                   permission-administration: write
 
-            - uses: actions/checkout@v5
+            - uses: actions/checkout@v7
 
             - name: Apply Metadata
-              uses: chewygumxx/apply-repo-metadata-jsonc@v2
+              uses: chewygumxx/sync-repo-metadata@v2
               with:
                   metadata_path: .repo-metadata.jsonc
                   token: ${{ steps.app-token.outputs.token }}
