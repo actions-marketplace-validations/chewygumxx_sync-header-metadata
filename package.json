@@ -12,7 +12,7 @@
     "node": "24.x"
   },
   "scripts": {
-    "prepare": "husky",
+    "prepare": "test -d node_modules/husky && husky || true",
     "test": "node --test"
   },
   "devDependencies": {
