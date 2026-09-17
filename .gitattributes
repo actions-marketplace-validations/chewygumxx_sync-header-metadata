@@ -8,6 +8,3 @@
 #
 #
 
-/package.json      -sync-header-metadata
-/package-lock.json -sync-header-metadata
-/LICENSE           -sync-header-metadata

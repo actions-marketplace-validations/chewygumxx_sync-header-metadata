@@ -111,6 +111,32 @@ Standard `.gitattributes` matching applies:
   specificity by setting the attribute back, e.g.
   `important/** sync-header-metadata`.
 
+#### Built-in defaults
+
+The action ships a baseline exclusion list for files that structurally can't
+carry a header comment, or are generated/lockfiles that shouldn't be
+hand-edited:
+
+```gitattributes
+/LICENSE*        -sync-header-metadata
+.keep            -sync-header-metadata
+*.json           -sync-header-metadata
+*.lock           -sync-header-metadata
+pnpm-lock.yaml   -sync-header-metadata
+go.sum           -sync-header-metadata
+*.min.js         -sync-header-metadata
+*.min.css        -sync-header-metadata
+```
+
+These are loaded at the lowest precedence, so they never need to be declared
+in your own `.gitattributes`. Any matching line in your repo — set or
+unset — always overrides a default, e.g. to re-enable syncing for one JSON
+file despite the blanket `*.json` default:
+
+```gitattributes
+config/version.json sync-header-metadata
+```
+
 
 ## Limitations
 

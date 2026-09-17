@@ -215,6 +215,39 @@ test('a file excluded via .gitattributes is ignored even when its header has dri
     assert.equal(result.status, 0);
 });
 
+test('bundled default exclusions apply with no .gitattributes present in the repo at all', (t) => {
+    const dir = makeRepo();
+    t.after(() => cleanup(dir));
+
+    writeFile(dir, 'LICENSE', header({ repo: 'wrong/repo', filepath: '/wrong/path' }));
+    writeFile(dir, 'vendor/.keep', header({ repo: 'wrong/repo', filepath: '/wrong/path' }));
+    writeFile(dir, 'data.json', header({ repo: 'wrong/repo', filepath: '/wrong/path' }));
+    writeFile(dir, 'go.sum', header({ repo: 'wrong/repo', filepath: '/wrong/path' }));
+    gitAdd(dir);
+
+    const result = runAction(dir, { INPUT_MODE: 'verify' });
+    assert.equal(result.status, 0);
+});
+
+test('a repo .gitattributes can re-enable syncing for a file matched by a bundled default', (t) => {
+    const dir = makeRepo();
+    t.after(() => cleanup(dir));
+
+    writeFile(dir, '.gitattributes', 'data.json sync-header-metadata\n');
+    writeFile(dir, 'data.json', header({ repo: 'wrong/repo', filepath: '/wrong/path.json' }));
+    writeFile(dir, 'other.json', header({ repo: 'wrong/repo', filepath: '/wrong/path.json' }));
+    gitAdd(dir);
+
+    const result = runAction(dir, { INPUT_MODE: 'verify' });
+    assert.equal(result.status, 1);
+    assert.match(result.stdout, /Repo line out-of-sync/);
+
+    const update = runAction(dir, { INPUT_MODE: 'update' });
+    assert.equal(update.status, 0);
+    assert.match(readFile(dir, 'data.json'), /~owner\/repo\.git/);
+    assert.match(readFile(dir, 'other.json'), /~wrong\/repo\.git/, 'other.json should remain untouched by the default exclusion');
+});
+
 test('a nested .gitattributes can re-enable syncing for a subtree excluded by its parent', (t) => {
     const dir = makeRepo();
     t.after(() => cleanup(dir));

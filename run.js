@@ -12,6 +12,7 @@
 'use strict';
 
 const fs               = require('node:fs');
+const path             = require('node:path');
 const { execFileSync } = require('node:child_process');
 
 const ActionLog = require('./src/action_log.js');
@@ -65,12 +66,18 @@ const allFiles = fileListRaw.split('\0').filter(Boolean);
 // A file opts out of header syncing by explicitly unsetting the
 // 'sync-header-metadata' boolean attribute in .gitattributes, e.g.:
 //   /LICENSE -sync-header-metadata
+//
+// default.gitattributes ships a baseline exclusion list (LICENSE, lockfiles,
+// *.json, etc.) via `core.attributesFile`, which git consults only as a
+// last resort. Any matching line in the repo's own .gitattributes/
+// info/attributes always takes precedence over it.
 const ATTR = 'sync-header-metadata';
+const DEFAULT_ATTRIBUTES_FILE = path.join(__dirname, 'default.gitattributes');
 let checkAttrRaw = '';
 if (allFiles.length > 0) {
     checkAttrRaw = execFileSync(
         'git',
-        ['-C', repoRoot, 'check-attr', '-z', '--stdin', ATTR],
+        ['-c', `core.attributesFile=${DEFAULT_ATTRIBUTES_FILE}`, '-C', repoRoot, 'check-attr', '-z', '--stdin', ATTR],
         { input: allFiles.join('\0'), encoding: 'utf8' }
     );
 }
