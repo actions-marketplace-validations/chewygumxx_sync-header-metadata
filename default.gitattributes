@@ -1,0 +1,17 @@
+# Bundled default exclusions for sync-header-metadata.
+#
+# Loaded as the lowest-precedence attribute source (via
+# `core.attributesFile`), so any matching line in a consumer repo's own
+# .gitattributes/info/attributes always wins over these defaults.
+#
+# These cover files that structurally can't carry a header comment, or are
+# generated/lockfiles that shouldn't be hand-edited.
+
+/LICENSE*        -sync-header-metadata
+.keep            -sync-header-metadata
+*.json           -sync-header-metadata
+*.lock           -sync-header-metadata
+pnpm-lock.yaml   -sync-header-metadata
+go.sum           -sync-header-metadata
+*.min.js         -sync-header-metadata
+*.min.css        -sync-header-metadata
